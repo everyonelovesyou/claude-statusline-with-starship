@@ -1,0 +1,65 @@
+# "$schema" = 'https://starship.rs/config-schema.json'
+
+# Starship template for Claude Code statusline
+
+format = """
+$os$directory\
+$git_branch\
+${env_var.CLAUDE_MODEL}\
+${env_var.CLAUDE_CONTEXT}\
+"""
+
+# $fill$time\
+
+add_newline = false
+
+# custom color palette
+palette = "everyonelovesyou"
+
+# custom colors
+[palettes.everyonelovesyou]
+purple = "#9B5DE5"
+pink = "#F47AC6"
+yellow = "#FEEB60"
+emerald = "#00F5D4"
+light_blue = "#00CBFA"
+navy = "#33658A"
+
+
+[fill]
+symbol = " "
+
+[os]
+disabled = false
+style = "bg:purple"
+format = "[](purple)[$symbol]($style)[ ](purple bg:pink)"
+
+[os.symbols]
+Macos = ""
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+style = "bg:pink"
+format = "[$path ]($style)[ ](pink bg:yellow)"
+
+[git_branch]
+symbol = ""
+style = "bg:yellow"
+format = "[$symbol $branch ]($style)[ ](yellow bg:emerald)"
+
+[env_var.CLAUDE_MODEL]
+style = "bg:emerald"
+format = "[$env_value ]($style)[](emerald)[ ](inverted light_blue)"
+variable = "CLAUDE_MODEL"
+
+[env_var.CLAUDE_CONTEXT]
+style = "bg:light_blue"
+format = "[ctx: [$env_value]($style bold) ]($style)[ ](light_blue)"
+variable = "CLAUDE_CONTEXT"
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:navy"
+format = "[ ](navy)[  $time ]($style)[](navy)"
