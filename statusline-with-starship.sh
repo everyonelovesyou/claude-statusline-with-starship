@@ -4,7 +4,7 @@ set -o errexit -o nounset -o pipefail
 # Claude Code statusline (w/ Starship)
 # stdin から JSON を受け取り、環境変数にエクスポートして starship prompt を実行する
 #
-# Based on: https://github.com/martinemde/starship-claude
+# Inspired by: https://github.com/martinemde/starship-claude
 
 payload="$(cat || true)"
 
