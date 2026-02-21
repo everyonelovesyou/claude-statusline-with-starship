@@ -1,15 +1,13 @@
-# "$schema" = 'https://starship.rs/config-schema.json'
+"$schema" = "https://starship.rs/config-schema.json"
 
 # Starship template for Claude Code statusline
 
 format = """
-$os$directory\
-$git_branch\
 ${env_var.CLAUDE_MODEL}\
+$directory\
+$git_branch\
 ${env_var.CLAUDE_CONTEXT}\
 """
-
-# $fill$time\
 
 add_newline = false
 
@@ -23,43 +21,24 @@ pink = "#F47AC6"
 yellow = "#FEEB60"
 emerald = "#00F5D4"
 light_blue = "#00CBFA"
-navy = "#33658A"
 
-
-[fill]
-symbol = " "
-
-[os]
-disabled = false
+[env_var.CLAUDE_MODEL]
 style = "bg:purple"
-format = "[](purple)[$symbol]($style)[ ](purple bg:pink)"
-
-[os.symbols]
-Macos = ""
+format = "[\ue0b6](purple)[\u2665  $env_value ]($style)[\ue0b4 ](purple bg:pink)"
+variable = "CLAUDE_MODEL"
 
 [directory]
 truncation_length = 3
 truncation_symbol = "…/"
 style = "bg:pink"
-format = "[$path ]($style)[ ](pink bg:yellow)"
+format = "[$path ]($style)[\ue0b0 ](pink bg:yellow)"
 
 [git_branch]
-symbol = ""
+symbol = "\uf418"
 style = "bg:yellow"
-format = "[$symbol $branch ]($style)[ ](yellow bg:emerald)"
-
-[env_var.CLAUDE_MODEL]
-style = "bg:emerald"
-format = "[$env_value ]($style)[](emerald)[ ](inverted light_blue)"
-variable = "CLAUDE_MODEL"
+format = "[$symbol $branch ]($style)[\ue0b0 ](yellow bg:emerald)[\ue0b0](emerald)"
 
 [env_var.CLAUDE_CONTEXT]
 style = "bg:light_blue"
-format = "[ctx: [$env_value]($style bold) ]($style)[ ](light_blue)"
+format = "[\ue0b0 ](inverted light_blue)[$env_value ]($style bold)[\ue0b0 ](light_blue)"
 variable = "CLAUDE_CONTEXT"
-
-[time]
-disabled = false
-time_format = "%R"
-style = "bg:navy"
-format = "[ ](navy)[  $time ]($style)[](navy)"

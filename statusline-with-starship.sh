@@ -14,7 +14,7 @@ if command -v jq >/dev/null 2>&1 && [ -n "$payload" ]; then
   # get_current_dir() { echo "$payload" | jq -r '.workspace.current_dir'; }
   # get_project_dir() { echo "$payload" | jq -r '.workspace.project_dir'; }
   # get_version() { echo "$payload" | jq -r '.version'; }
-  # get_input_tokens() { echo "$input" | jq -r '.context_window.total_input_tokens'; }
+  # get_input_tokens() { echo "$payload" | jq -r '.context_window.total_input_tokens'; }
   # get_output_tokens() { echo "$payload" | jq -r '.context_window.total_output_tokens'; }
   get_usage() { echo "$payload" | jq -r '.context_window.current_usage'; }
   get_context_window_size() { echo "$payload" | jq -r '.context_window.context_window_size'; }
