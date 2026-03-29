@@ -36,9 +36,9 @@ format = "[$path ]($style)[\ue0b0 ](pink bg:yellow)"
 [git_branch]
 symbol = "\uf418"
 style = "bg:yellow"
-format = "[$symbol $branch ]($style)[\ue0b0 ](yellow bg:emerald)[\ue0b0](emerald)"
+format = "[$symbol $branch ]($style)"
 
 [env_var.CLAUDE_CONTEXT]
 style = "bg:light_blue"
-format = "[\ue0b0 ](inverted light_blue)[$env_value ]($style bold)[\ue0b0 ](light_blue)"
+format = "[\ue0b0 ](yellow bg:emerald)[\ue0b0](emerald)[\ue0b0 ](inverted light_blue)[$env_value ]($style bold)[\ue0b0 ](light_blue)"
 variable = "CLAUDE_CONTEXT"
