@@ -6,32 +6,48 @@ set -o errexit -o nounset -o pipefail
 #
 # Inspired by: https://github.com/martinemde/starship-claude
 
-payload="$(cat || true)"
+input="$(cat || true)"
 
-if command -v jq >/dev/null 2>&1 && [ -n "$payload" ]; then
+if command -v jq >/dev/null 2>&1 && [ -n "$input" ]; then
 
-  get_model_name() { echo "$payload" | jq -r '.model.display_name'; }
-  # get_current_dir() { echo "$payload" | jq -r '.workspace.current_dir'; }
-  # get_project_dir() { echo "$payload" | jq -r '.workspace.project_dir'; }
-  # get_version() { echo "$payload" | jq -r '.version'; }
-  # get_input_tokens() { echo "$payload" | jq -r '.context_window.total_input_tokens'; }
-  # get_output_tokens() { echo "$payload" | jq -r '.context_window.total_output_tokens'; }
-  get_usage() { echo "$payload" | jq -r '.context_window.current_usage'; }
-  get_context_window_size() { echo "$payload" | jq -r '.context_window.context_window_size'; }
+  MODEL=$(echo "$input" | jq -r '.model.display_name')
+  effort=$(echo "$input" | jq -r '.effort.level // empty')
+  CONTEXT=$(echo "$input" | jq -r '(.context_window.used_percentage // 0) | round')
+  rate_5h_pct=$(echo "$input" | jq -r '(.rate_limits.five_hour.used_percentage // 0) | round')
+  rate_5h_reset_epoch=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
+  rate_7d_pct=$(echo "$input" | jq -r '(.rate_limits.seven_day.used_percentage // 0) | round')
+  rate_7d_reset_epoch=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
 
-  model_name=$(get_model_name)
-  export CLAUDE_MODEL="$model_name"
-  context_size=$(get_context_window_size)
-  usage=$(get_usage)
+  export CLAUDE_MODEL="$MODEL"
 
-  # コンテキスト使用率を計算する
-  if [ "$usage" != "null" ]; then
-    current_tokens=$(echo "$usage" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
-    percent=$((current_tokens * 100 / context_size))
-    export CLAUDE_CONTEXT="${percent}%"
-  else
-    export CLAUDE_CONTEXT="0%"
+  # effort
+  if [ -n "$effort" ]; then
+    EFFORT=""
+    case "$effort" in
+      "low" ) EFFORT="󰋕" ;; # f02d5  nf-md-heart_outline
+      "medium" ) EFFORT="󰛞" ;; # f06de  nf-md-heart_half_full
+      "high" | "xhigh" ) EFFORT="󰋑" ;; # f02d1  nf-md-heart
+      "max" ) EFFORT="󰋑󰋕" ;; # f02d1 f02d5
+      * ) EFFORT="󰋔" ;; # f0d14  nf-md-heart_broken_outline
+    esac
+    export CLAUDE_EFFORT="$EFFORT"
   fi
+
+  # コンテキスト使用率
+  export CLAUDE_CONTEXT="${CONTEXT}%"
+
+  # レート制限 5h
+  if [ -n "$rate_5h_reset_epoch" ]; then
+    rate_5h_reset_jst=$(TZ='Asia/Tokyo' date -r "$rate_5h_reset_epoch" '+%-H:%M')
+    export CLAUDE_RATE_5H="${rate_5h_pct}%(${rate_5h_reset_jst})"
+  fi
+
+  # レート制限 7d
+  if [ -n "$rate_7d_reset_epoch" ]; then
+    rate_7d_reset_jst=$(TZ='Asia/Tokyo' date -r "$rate_7d_reset_epoch" '+%-m/%-d %-H:%M')
+    export CLAUDE_RATE_7D="${rate_7d_pct}%(${rate_7d_reset_jst})"
+  fi
+
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

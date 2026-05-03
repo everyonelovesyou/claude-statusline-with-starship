@@ -1,12 +1,24 @@
-"$schema" = "https://starship.rs/config-schema.json"
+"$schema" = 'https://starship.rs/config-schema.json'
 
 # Starship template for Claude Code statusline
 
 format = """
-${env_var.CLAUDE_MODEL}\
+[](fg:magenta)\
 $directory\
+[](fg:magenta bg:yellow)\
 $git_branch\
+$git_status\
+[](fg:yellow)\
+$line_break $fill $line_break\
+[](fg:blue)\
+${env_var.CLAUDE_EFFORT}\
+${env_var.CLAUDE_MODEL}\
+[](fg:blue)\
+[](fg:cyan inverted)\
 ${env_var.CLAUDE_CONTEXT}\
+[](fg:cyan) \
+${env_var.CLAUDE_RATE_5H} \
+${env_var.CLAUDE_RATE_7D}\
 """
 
 add_newline = false
@@ -16,29 +28,60 @@ palette = "everyonelovesyou"
 
 # custom colors
 [palettes.everyonelovesyou]
-purple = "#9B5DE5"
-pink = "#F47AC6"
-yellow = "#FEEB60"
-emerald = "#00F5D4"
-light_blue = "#00CBFA"
+magenta = "purple"
 
-[env_var.CLAUDE_MODEL]
-style = "bg:purple"
-format = "[\ue0b6](purple)[\u2665  $env_value ]($style)[\ue0b4 ](purple bg:pink)"
-variable = "CLAUDE_MODEL"
+background = "#352727"
+foreground = "#fdfdfd"
+
+
+[fill]
+symbol = " "
 
 [directory]
-truncation_length = 3
+truncation_length = 4
 truncation_symbol = "…/"
-style = "bg:pink"
-format = "[$path ]($style)[\ue0b0 ](pink bg:yellow)"
+truncate_to_repo = false
+style = "fg:black bg:magenta"
+format = "[ $path ]($style)"
 
 [git_branch]
-symbol = "\uf418"
-style = "bg:yellow"
-format = "[$symbol $branch ]($style)"
+symbol = ""
+style = "fg:black bg:yellow"
+format = "[ $symbol $branch]($style)"
+
+[git_status]
+style = "fg:black bg:yellow"
+format = "[[$all_status]($style bold) $ahead_behind]($style)"
+ahead = "${count}↑ "
+behind = "${count}↓ "
+diverged = "${ahead_count}↑ ${behind_count}↓ "
+deleted	= ""
+modified = "!"
+stashed = ""
+
+[env_var.CLAUDE_EFFORT]
+style = "fg:black bg:blue"
+format = "[$env_value ]($style)"
+variable = "CLAUDE_EFFORT"
+
+[env_var.CLAUDE_MODEL]
+style = "fg:black bg:blue"
+format = "[ $env_value ]($style)"
+variable = "CLAUDE_MODEL"
 
 [env_var.CLAUDE_CONTEXT]
-style = "bg:light_blue"
-format = "[\ue0b0 ](yellow bg:emerald)[\ue0b0](emerald)[\ue0b0 ](inverted light_blue)[$env_value ]($style bold)[\ue0b0 ](light_blue)"
+style = "fg:black bg:cyan"
+format = "[ $env_value ]($style bold)"
 variable = "CLAUDE_CONTEXT"
+
+[env_var.CLAUDE_RATE_5H]
+symbol = "󰅐 "
+style = "fg:foreground dimmed"
+format = "[ $symbol$env_value]($style)"
+variable = "CLAUDE_RATE_5H"
+
+[env_var.CLAUDE_RATE_7D]
+symbol = "󱨴 "
+style = "fg:foreground dimmed"
+format = "[ $symbol$env_value]($style)"
+variable = "CLAUDE_RATE_7D"
